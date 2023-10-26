@@ -43,7 +43,7 @@ class MTFAANet(nn.Module):
                  win_len=32*48,
                  win_hop=8*48,
                  nerb=256,
-                 sr=48000,
+                 sr=16000,
                  win_type="hann",
                  ):
         super(MTFAANet, self).__init__()
@@ -147,7 +147,7 @@ class MTFAANet(nn.Module):
 def test_nnet():
     # noise supression (microphone, )
     nnet = MTFAANet(n_sig=1)
-    inp = th.randn(3, 48000)
+    inp = th.randn(4, 16000)
     mag, cspec, wav = nnet([inp])
     print(mag.shape, cspec.shape, wav.shape)
     # echo cancellation (microphone, error, reference,)
@@ -161,8 +161,8 @@ def test_mac():
     import torch as th
     nnet = MTFAANet(n_sig=3)
     # hop=8ms, win=32ms@48KHz, process 1s.
-    inp = th.randn(1, 48000)
-    # inp = th.randn(1, 2, 769, 126)
+    # inp = th.randn(1, 16000)
+    inp = th.randn(1, 2, 769, 126)
     macs, params = profile(nnet, inputs=([inp, inp, inp],), verbose=False)
     macs, params = clever_format([macs, params], "%.3f")
     print('macs: ', macs)

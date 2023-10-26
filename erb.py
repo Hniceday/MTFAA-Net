@@ -10,7 +10,7 @@ from spafe.fbanks import linear_fbanks
 
 
 class Banks(nn.Module):
-    def __init__(self, nfilters, nfft, fs, low_freq=None, high_freq=None, learnable=False):
+    def __init__(self, nfilters, nfft, fs, low_freq=0, high_freq=8000, learnable=False):
         super(Banks, self).__init__()
         self.nfilters, self.nfft, self.fs = nfilters, nfft, fs
         filter, _ = linear_fbanks.linear_filter_banks(
@@ -42,8 +42,8 @@ def test_bank():
     import numpy as np
     from stft import STFT
     stft = STFT(32*48, 8*48, 32*48, "hann")
-    net = Banks(256, 32*48, 48000)
-    sig_raw, sr = sf.read("path/to/48k.wav")
+    net = Banks(256, 32*48, 16000)
+    sig_raw, sr = sf.read("path/to/16k.wav")
     sig = th.from_numpy(sig_raw)[None, :].float()
     cspec = stft.transform(sig)
     mag = th.norm(cspec, dim=1)
